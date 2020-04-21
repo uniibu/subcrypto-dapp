@@ -116,7 +116,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='manage-sub'">
           <b-card-title class="domain">
-            <h4>{{ $store.state.subdomain + '.' + $store.state.domain }}</h4>
+            <h4>{{ $store.state.subDomain + '.' + $store.state.domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -142,7 +142,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='create-sub'">
           <b-card-title class="domain">
-            <h4>{{ $store.state.subdomain + '.' + $store.state.domain }}</h4>
+            <h4>{{ $store.state.subDomain + '.' + $store.state.domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -332,9 +332,10 @@ export default {
           window.location.reload()
         }
       })
-      const sub = this.$store.state.subdomain
+      const sub = this.$store.state.subDomain
       const tokenId = ethers.utils.namehash(this.$store.getters.Domain)
-      superRegistryContract.functions.safeMintChild(wallet.address, tokenId, sub)
+      await superRegistryContract.functions.safeMintChild(wallet.address, tokenId, sub)
+      this.showAlert('Please wait for transaction to confirm')
     },
     acceptDisclaimer () {
       window.localStorage.setItem('disclaimer', 1)
