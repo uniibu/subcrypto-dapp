@@ -77,7 +77,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='manage'">
           <b-card-title class="domain">
-            <h4>{{ domain }}</h4>
+            <h4>{{ store.getters.Domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -108,7 +108,7 @@
               />
               <b-input-group-prepend>
                 <b-input-group-text>
-                  .{{ domain }}
+                  .{{ store.getters.Domain }}
                 </b-input-group-text>
               </b-input-group-prepend>
             </b-input-group>
@@ -116,7 +116,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='manage-sub'">
           <b-card-title class="domain">
-            <h4>{{ domain }}</h4>
+            <h4>{{ store.getters.SubDomain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -142,7 +142,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='create-sub'">
           <b-card-title class="domain">
-            <h4>{{ domain }}</h4>
+            <h4>{{ store.getters.SubDomain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -228,11 +228,10 @@ export default {
     return {
       waiting: false,
       tokenId: '',
-      mainDomain: '',
       createSub: false,
-      enabled: false,
       domain: '',
       subDomain: '',
+      enabled: false,
       domainOwner: '',
       state: null,
       alertmessage: '',
@@ -252,21 +251,19 @@ export default {
     } else {
       this.enabled = true
     }
-    consola.log(this.page)
-    if (window.location.hash) {
-      const domain = window.location.hash.substr(1)
-      if (!this.isSubDomain(domain)) {
-        this.page = 'manage'
-        this.domain = domain
-        this.mainDomain = domain
-        this.enterDomain()
-      } else {
-        this.page = 'manage-sub'
-        const parts = domain.split('.')
-        this.subDomain = parts.shift()
-        this.domain = parts.join('.')
-        this.mainDomain = this.domain
+    const hash = window.location.hash.substr(1)
+    if (hash) {
+      window.location.hash = ''
+      if (this.isSubDomain(hash)) {
+        const parts = hash.split('.')
+        const sub = parts.shift()
+        const domain = parts.join('.')
+        this.$store.dispatch('setDomain', domain)
+        this.subDomain = sub
         this.enterSubDomain()
+      } else {
+        this.domain = hash
+        this.enterDomain()
       }
     }
   },
@@ -289,8 +286,9 @@ export default {
         this.registryAbi,
         wallet.signer.provider
       )
-      consola.log(this.domain)
-      const tokenId = ethers.utils.namehash(this.domain)
+      const subdomain = this.$store.getters.SubDomain
+      consola.log(subdomain)
+      const tokenId = ethers.utils.namehash(subdomain)
 
       const currentResolverAddress = await registryContract.resolverOf(tokenId).catch(() => {})
       const resolverContract = new ethers.Contract(
@@ -328,14 +326,15 @@ export default {
       const superRegistryContract = registryContract.connect(wallet.signer)
       superRegistryContract.once('NewURI', (tokenId, newAddress) => {
         consola.log(tokenId, newAddress)
-        if (this.domain === newAddress) {
+        if (this.$store.getters.SubDomain === newAddress) {
           this.toHash()
           this.waiting = false
           window.location.reload()
         }
       })
-      const sub = this.domain.split('.').shift()
-      superRegistryContract.functions.safeMintChild(wallet.address, this.tokenId, sub)
+      const sub = this.$store.state.subdomain
+      const tokenId = ethers.utils.namehash(this.$store.getters.Domain)
+      superRegistryContract.functions.safeMintChild(wallet.address, tokenId, sub)
     },
     acceptDisclaimer () {
       window.localStorage.setItem('disclaimer', 1)
@@ -349,11 +348,11 @@ export default {
     },
     toHome () {
       window.location.hash = ''
-      window.location.reload();
+      window.location.reload()
     },
     toHash () {
       window.location.hash = '#' + this.domain
-      window.location.reload();
+      window.location.reload()
     },
     countDownChanged (dismissCountDown) {
       this.dismissCountDown = dismissCountDown
@@ -391,30 +390,32 @@ export default {
       }
     },
     async showDetails () {
+      const domain = this.$store.getters.SubDomain
       for (const curr of this.currencies) {
         this.domainInfos.push({
           label: curr + ' Address',
           key: curr,
-          model: await this.resolutionAsync('address', this.domain, curr),
+          model: await this.resolutionAsync('address', domain, curr),
           id: curr + 'input'
         })
       }
       this.domainInfos.push({
         label: 'IPFS HASH',
         key: 'html',
-        model: await this.resolutionAsync('ipfsHash', this.domain),
+        model: await this.resolutionAsync('ipfsHash', domain),
         id: 'ipfshash'
       })
       this.domainInfos.push({
         label: 'IPFS URL',
         key: 'redirect_domain',
-        model: await this.resolutionAsync('httpUrl', this.domain),
+        model: await this.resolutionAsync('httpUrl', domain),
         id: 'ipfshttp'
       })
       consola.info('domaininfos', this.domainInfos)
     },
     async enterSubDomain () {
-      let subDomain = this.subDomain + '.' + this.domain
+      this.$store.dispatch('setSubDomain', this.subDomain)
+      let subDomain = this.$store.getters.SubDomain
       subDomain = this.prepareDomain(subDomain)
       if (!subDomain) {
         this.state = false
@@ -423,15 +424,12 @@ export default {
       this.domainOwner = await this.resolutionAsync('owner', subDomain)
       consola.log(this.domainOwner)
       if (this.domainOwner && this.domainOwner !== '0x0000000000000000000000000000000000000000') {
-        this.domain = subDomain
         this.page = 'manage-sub'
         this.showDetails()
       } else {
         if (this.domainOwner === '0x0000000000000000000000000000000000000000') {
           this.domainOwner = 'This domain is not registered'
         }
-        this.tokenId = ethers.utils.namehash(this.mainDomain)
-        this.domain = subDomain
         this.page = 'create-sub'
       }
     },
@@ -470,28 +468,21 @@ export default {
       if (!this.enabled) {
         return this.$bvModal.show('disclaimer')
       }
-      if (this.page === 'manage-sub') {
-        await this.updateDomainInfos()
-      } else {
-        await this._enterDomain()
-      }
+      this.$store.dispatch('setDomain', this.domain)
+      await this._enterDomain()
     },
     async _enterDomain () {
-      if (this.subDomain) {
-        return this.enterSubDomain()
-      }
-      const domain = this.prepareDomain(this.domain)
+      let domain = this.$store.getters.Domain
+      domain = this.prepareDomain(domain)
       if (!domain) {
         this.state = false
       }
       this.domainOwner = await this.resolutionAsync('owner', domain)
-
       consola.log(this.domainOwner)
-      if (this.domainOwner && this.domainOwner !== '0x0000000000000000000000000000000000000000') {
-        this.domain = domain
-        this.page = 'manage'
-      } else {
+      if (!this.domainOwner || this.domainOwner === '0x0000000000000000000000000000000000000000') {
         this.showAlert('This domain does not exist!')
+      } else {
+        this.page = 'manage'
       }
     }
   }

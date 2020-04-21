@@ -10,7 +10,7 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "lint": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
+    "lint": "eslint --fix --ext .js,.vue --ignore-path .eslintignore ."
   },
   "dependencies": {
     "@unstoppabledomains/resolution": "^1.3.6",
