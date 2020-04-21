@@ -1,0 +1,30 @@
+{
+  "name": "subcrypto-dapp",
+  "version": "1.0.0",
+  "description": "Crypto Subdomain Manager",
+  "author": "unibtc",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
+  },
+  "dependencies": {
+    "@unstoppabledomains/resolution": "^1.3.6",
+    "bootstrap-vue": "^2.12.0",
+    "ethers": "^4.0.46",
+    "nuxt": "^2.0.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^2.0.0",
+    "@nuxtjs/eslint-module": "^1.0.0",
+    "babel-eslint": "^10.0.1",
+    "consola": "^2.11.3",
+    "eslint": "^6.1.0",
+    "eslint-plugin-nuxt": ">=0.4.2",
+    "node-sass": "^4.13.1",
+    "sass-loader": "^8.0.2"
+  }
+}

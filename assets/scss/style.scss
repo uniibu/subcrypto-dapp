@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.container {
+    margin: 0 auto;
+    padding-top: 3rem;
+    max-width: 800px !important;
+}
+.centerx {
+      display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+.search {
+  padding: 1.5rem;
+    margin-right: 0;
+    margin-left: 0;
+    border-width: .2rem;
+}
+.search .card {
+  min-width: 80%;
+}
+.search .icon {
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    width: 20px;
+    height: 20px;
+}
+.domain {
+  color: #4C47F7;
+
+}
+.domain h4 {
+  font-size: 2.125rem;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.17;
+    font-weight: bold;
+    text-align: center;
+}
+.domain h5 {
+  font-size: 1.8rem;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.17;
+    font-weight: bold;
+    text-align: center;
+}
+.owner h5{
+      font-size: 24px;
+    font-weight: bold;
+}
+.owner {
+  font-size: 0.9rem;
+}
+.button-div {
+      padding-right: 1.25rem;
+}
+.license {
+  font-size: 10px
+}
+.signature {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    font-size: 13px;
+    color: #7b93a2;
+    font-weight: 600;
+}
+.signature .heart {
+    overflow: hidden;
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    will-change: transform;
+    color: #dc3545;
+    font-size: 16px;
+    animation-name: hearthing;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease;
+}
+.authorname {
+    color: #425b6b;
+    text-shadow: none;
+}
+.alert {
+  z-index: 1000
+}
+.repo {
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    font-size: 13px;
+    color: #7b93a2;
+    font-weight: 600;
+}
+footer {
+    color: #7b93a2;
+    font-size: 11px;
+    line-height: 1;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    width: 800px;
+}
+.trademark {
+  font-size:9px;
+}
+.modal-footer {
+  width: 100%;
+}
