@@ -9,7 +9,7 @@
     "clean": "rm -rf dist/*",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "yarn clean && nuxt generate",
+    "generate": "nuxt generate",
     "lint": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
