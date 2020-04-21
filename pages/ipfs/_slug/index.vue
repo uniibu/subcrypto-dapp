@@ -158,11 +158,21 @@
             <b-button :show="!waiting" variant="primary" size="sm" @click="createSubDomain">
               Create
             </b-button>
-            <b-progress :show="waiting" :value="100" variant="default" :striped="striped" class="mt-2" />
+            <b-progress :show="waiting" :value="100" variant="default" :striped="true" class="mt-2" />
           </b-alert>
         </b-card-body>
-        <div class="d-flex justify-content-end button-div">
+        <div v-if="page === 'start'" class="d-flex justify-content-end button-div">
           <b-button v-show="page!=='create-sub'" variant="primary" @click="enterDomain">
+            Submit
+          </b-button>
+        </div>
+        <div v-else-if="page === 'manage'" class="d-flex justify-content-end button-div">
+          <b-button v-show="page!=='create-sub'" variant="primary" @click="enterSubDomain">
+            Submit
+          </b-button>
+        </div>
+        <div v-else-if="page === 'manage-sub'" class="d-flex justify-content-end button-div">
+          <b-button v-show="page!=='create-sub'" variant="primary" @click="updateDomainInfos">
             Submit
           </b-button>
         </div>
@@ -415,7 +425,6 @@ export default {
       if (this.domainOwner && this.domainOwner !== '0x0000000000000000000000000000000000000000') {
         this.domain = subDomain
         this.page = 'manage-sub'
-        this.toHash()
         this.showDetails()
       } else {
         if (this.domainOwner === '0x0000000000000000000000000000000000000000') {
@@ -456,6 +465,7 @@ export default {
       this.domain = parts.join('.')
       this.toHash()
     },
+
     async enterDomain () {
       if (!this.enabled) {
         return this.$bvModal.show('disclaimer')
@@ -480,7 +490,6 @@ export default {
       if (this.domainOwner && this.domainOwner !== '0x0000000000000000000000000000000000000000') {
         this.domain = domain
         this.page = 'manage'
-        this.toHash()
       } else {
         this.showAlert('This domain does not exist!')
       }
