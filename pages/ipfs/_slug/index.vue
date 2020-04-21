@@ -77,7 +77,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='manage'">
           <b-card-title class="domain">
-            <h4>{{ store.getters.Domain }}</h4>
+            <h4>{{ store.state.domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -108,7 +108,7 @@
               />
               <b-input-group-prepend>
                 <b-input-group-text>
-                  .{{ store.getters.Domain }}
+                  .{{ store.state.domain }}
                 </b-input-group-text>
               </b-input-group-prepend>
             </b-input-group>
@@ -116,7 +116,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='manage-sub'">
           <b-card-title class="domain">
-            <h4>{{ store.getters.SubDomain }}</h4>
+            <h4>{{ store.state.subdomain + '.' + store.state.domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -142,7 +142,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='create-sub'">
           <b-card-title class="domain">
-            <h4>{{ store.getters.SubDomain }}</h4>
+            <h4>{{ store.state.subdomain + '.' + store.state.domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -414,6 +414,7 @@ export default {
       consola.info('domaininfos', this.domainInfos)
     },
     async enterSubDomain () {
+      consola.log('Entering Subdomain')
       this.$store.dispatch('setSubDomain', this.subDomain)
       let subDomain = this.$store.getters.SubDomain
       subDomain = this.prepareDomain(subDomain)
@@ -421,6 +422,7 @@ export default {
         this.state = false
         return
       }
+      consola.log('Subdomain', subDomain)
       this.domainOwner = await this.resolutionAsync('owner', subDomain)
       consola.log(this.domainOwner)
       if (this.domainOwner && this.domainOwner !== '0x0000000000000000000000000000000000000000') {
@@ -468,15 +470,16 @@ export default {
       if (!this.enabled) {
         return this.$bvModal.show('disclaimer')
       }
-      this.$store.dispatch('setDomain', this.domain)
+      const domain = this.prepareDomain(this.domain)
+      if (!domain) {
+        this.state = false
+        return
+      }
+      this.$store.dispatch('setDomain', domain)
       await this._enterDomain()
     },
     async _enterDomain () {
-      let domain = this.$store.getters.Domain
-      domain = this.prepareDomain(domain)
-      if (!domain) {
-        this.state = false
-      }
+      const domain = this.$store.getters.Domain
       this.domainOwner = await this.resolutionAsync('owner', domain)
       consola.log(this.domainOwner)
       if (!this.domainOwner || this.domainOwner === '0x0000000000000000000000000000000000000000') {
