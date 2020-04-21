@@ -77,7 +77,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='manage'">
           <b-card-title class="domain">
-            <h4>{{ store.state.domain }}</h4>
+            <h4>{{ $store.state.domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -108,7 +108,7 @@
               />
               <b-input-group-prepend>
                 <b-input-group-text>
-                  .{{ store.state.domain }}
+                  .{{ $store.state.domain }}
                 </b-input-group-text>
               </b-input-group-prepend>
             </b-input-group>
@@ -116,7 +116,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='manage-sub'">
           <b-card-title class="domain">
-            <h4>{{ store.state.subdomain + '.' + store.state.domain }}</h4>
+            <h4>{{ $store.state.subdomain + '.' + $store.state.domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
@@ -142,7 +142,7 @@
         </b-card-body>
         <b-card-body v-else-if="page==='create-sub'">
           <b-card-title class="domain">
-            <h4>{{ store.state.subdomain + '.' + store.state.domain }}</h4>
+            <h4>{{ $store.state.subdomain + '.' + $store.state.domain }}</h4>
           </b-card-title>
           <b-card-sub-title class="mb-2" />
           <b-card-text class="owner">
