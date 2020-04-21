@@ -431,9 +431,6 @@ export default {
         if (this.domainOwner === '0x0000000000000000000000000000000000000000') {
           this.domainOwner = 'This domain is not registered'
         }
-        if (this.mainDomain !== this.domain) {
-          throw new Error('Invalid Domain')
-        }
         this.tokenId = ethers.utils.namehash(this.mainDomain)
         this.domain = subDomain
         this.page = 'create-sub'
