@@ -56,6 +56,7 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+      config.output.publicPath = 'nuxt/';
       config.resolve.alias.Mixins = '~/mixins'
     }
   }
