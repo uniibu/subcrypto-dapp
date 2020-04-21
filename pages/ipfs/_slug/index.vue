@@ -339,21 +339,11 @@ export default {
     },
     toHome () {
       window.location.hash = ''
-      this.state = null
-      this.domain = ''
-      this.subDomain = ''
-      this.domainOwner = ''
-      this.alertmessage = ''
-      this.page = 'start'
-      this.ipfs = ''
-      this.htmlUrl = ''
-      this.createSub = false
-      this.domainInfos = []
-      this.tokenId = ''
-      this.mainDomain = ''
+      window.location.reload();
     },
     toHash () {
       window.location.hash = '#' + this.domain
+      window.location.reload();
     },
     countDownChanged (dismissCountDown) {
       this.dismissCountDown = dismissCountDown
@@ -464,7 +454,7 @@ export default {
       }
       parts.shift()
       this.domain = parts.join('.')
-      this.enterDomain()
+      this.toHash()
     },
     async enterDomain () {
       if (!this.enabled) {
